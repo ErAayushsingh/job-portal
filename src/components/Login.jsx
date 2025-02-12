@@ -14,7 +14,7 @@ function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError(null);  // Clear any previous errors
+        setError(null);
 
         try {
             const response = await apiService.post(apiEndpoints.auth.login, {
@@ -23,7 +23,6 @@ function Login() {
             });
 
             if (response && response.jwtToken) {
-                // Store user data and token
                 const userData = {
                     name: response.name,
                     role: response.userRole,
@@ -33,11 +32,15 @@ function Login() {
 
                 localStorage.setItem('user', JSON.stringify(userData));
 
-                // Show success alert
-                setSuccess('Login successful! Welcome, ' + response.name);
-                
-                // Redirect to homepage after 2 seconds
-                setTimeout(() => navigate('/'), 2000);
+                setSuccess(`Login successful! Welcome, ${response.name}`);
+
+                setTimeout(() => {
+                    if (response.userRole === 'ADMIN') {
+                        navigate('/create-post');
+                    } else if (response.userRole === 'USER') {
+                        navigate('/job-list');
+                    }
+                }, 1000);
             } else {
                 setError('Invalid login response.');
             }

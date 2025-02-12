@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -11,13 +11,13 @@ import Register from './components/Register';
 import CreatePost from './components/CreatePost';
 import ProfileSidebar from './components/UpdateProfile/ProfileSidebar';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Home from './components/UpdateProfile/Pages/Home'
-import Applications from './components/UpdateProfile/Pages/Applications'
-import Bookmarks from './components/UpdateProfile/Pages/Bookmarks'
-import EditResume from './components/UpdateProfile/Pages/EditResume'
-import EditPreferences from './components/UpdateProfile/Pages/EditPreferences'
-import SafetyTips from './components/UpdateProfile/Pages/SafetyTips'
-import HelpCenter from './components/UpdateProfile/Pages/HelpCenter'
+import Home from './components/UpdateProfile/Pages/Home';
+import Applications from './components/UpdateProfile/Pages/Applications';
+import Bookmarks from './components/UpdateProfile/Pages/Bookmarks';
+import EditResume from './components/UpdateProfile/Pages/EditResume';
+import EditPreferences from './components/UpdateProfile/Pages/EditPreferences';
+import SafetyTips from './components/UpdateProfile/Pages/SafetyTips';
+import HelpCenter from './components/UpdateProfile/Pages/HelpCenter';
 import './App.css';
 
 function App() {
@@ -44,38 +44,44 @@ function App() {
         <Router>
             <Header />
             <Routes>
-                {userRole === 'ADMIN' ? (
-                    <Route path="/" element={<Navigate to="/create-post" />} />
-                ) : userRole === 'USER' ? (
-                    <Route
-                        path="/"
-                        element={
-                            <Container fluid className="mt-4">
-                                <h2 className="text-center mb-4">Available Jobs</h2>
-                                <Row>
-                                    <Col md={3} className="sticky-filters">
-                                        <Filters />
-                                    </Col>
-                                    <Col md={9} className="scrollable-content">
-                                        <JobList onJobClick={handleShowDetails} />
-                                    </Col>
-                                </Row>
-                                <JobDetailsModal job={selectedJob} show={showModal} onClose={handleCloseModal} />
-                            </Container>
-                        }
-                    />
-                ) : (
-                    <Route path="/" element={<Navigate to="/login" />} />
-                )}
+                {/* Redirect Home Route to Appropriate Page */}
+                <Route path="/" element={
+                    userRole === 'ADMIN' ? <Navigate to="/create-post" /> :
+                    userRole === 'USER' ? <Navigate to="/job-list" /> :
+                    <Navigate to="/login" />
+                } />
 
-<Route
-                    path="/update-profile/*"
-                    element={
+                {/* Job List Page (For USERS) */}
+                <Route path="/job-list" element={
+                    userRole === 'USER' ? (
+                        <Container fluid className="mt-4">
+                            <h2 className="text-center mb-4">Available Jobs</h2>
+                            <Row>
+                                <Col md={3} className="sticky-filters">
+                                    <Filters />
+                                </Col>
+                                <Col md={9} className="scrollable-content">
+                                    <JobList onJobClick={handleShowDetails} />
+                                </Col>
+                            </Row>
+                            <JobDetailsModal job={selectedJob} show={showModal} onClose={handleCloseModal} />
+                        </Container>
+                    ) : <Navigate to="/" />
+                } />
+
+                {/* Create Post Page (For ADMINS) */}
+                <Route path="/create-post" element={
+                    userRole === 'ADMIN' ? <CreatePost /> : <Navigate to="/" />
+                } />
+
+                {/* Profile Update Routes */}
+                <Route path="/update-profile/*" element={
+                    userRole ? (
                         <Container fluid className="d-flex" style={{ height: '100vh' }}>
                             <Col md={3} className="p-0" style={{ borderRight: '1px solid #ddd' }}>
                                 <ProfileSidebar />
                             </Col>
-                            <Col md={9} className="p-4" style={{overflowY:'auto'}}>
+                            <Col md={9} className="p-4" style={{ overflowY: 'auto' }}>
                                 <Routes>
                                     <Route path="home" element={<Home />} />
                                     <Route path="applications" element={<Applications />} />
@@ -88,13 +94,15 @@ function App() {
                                 </Routes>
                             </Col>
                         </Container>
-                    }
-                />
+                    ) : <Navigate to="/login" />
+                } />
 
+                {/* Login & Register Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/create-post" element={userRole === 'ADMIN' ? <CreatePost /> : <Navigate to="/" />} />
-                <Route path="*" element={<Navigate to="/" />} />
+
+                {/* Redirect unknown routes to /job-list */}
+                <Route path="*" element={<Navigate to="/job-list" />} />
             </Routes>
             <Footer />
         </Router>

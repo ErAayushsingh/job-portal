@@ -3,7 +3,7 @@ import { Navbar, Nav, Container, NavDropdown, Form, Button, FormControl } from '
 import { useNavigate } from 'react-router-dom';
 import apiService from './ApiService';
 import apiEndpoints from './apiendpoint';
-import CommonAlert from '../components/Common/CommonAlert';
+import CommonAlert from './Common/CommonAlert';
 
 function Header({ onSearchResults }) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -18,7 +18,7 @@ function Header({ onSearchResults }) {
                 setUser(JSON.parse(storedUser));
             } catch (err) {
                 console.error('Failed to parse user data:', err);
-                setUser(null);  // Set to null in case of parsing errors
+                setUser(null);
             }
         } else {
             setUser(null);
@@ -37,7 +37,7 @@ function Header({ onSearchResults }) {
                     message: `Jobs found for "${searchQuery}"!`,
                     variant: 'success',
                 });
-                setSearchQuery('');  // Clear search box after successful search
+                setSearchQuery('');
             } catch (err) {
                 setAlert({
                     message: 'Failed to fetch search results. Please try again.',
@@ -55,7 +55,7 @@ function Header({ onSearchResults }) {
     const handleLogout = () => {
         localStorage.removeItem('user');
         setUser(null);
-        navigate('/');
+        navigate('/login');
 
         setAlert({
             message: 'Logged out successfully.',
@@ -72,7 +72,11 @@ function Header({ onSearchResults }) {
             {alert.message && <CommonAlert message={alert.message} variant={alert.variant} />}
             <Navbar bg="white" expand="lg" className="shadow-sm p-3 sticky-top">
                 <Container>
-                    <Navbar.Brand href="/" className="fw-bold" style={{ color: '#007bff', fontSize: '24px' }}>
+                    <Navbar.Brand
+                        href="/"
+                        className="fw-bold"
+                        style={{ color: '#007bff', fontSize: '24px' }}
+                    >
                         JobPortal
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -105,7 +109,7 @@ function Header({ onSearchResults }) {
                                 {user?.role === 'USER' && (
                                     <Nav.Link
                                         className="fw-bold me-3"
-                                        onClick={() => navigate('/')}
+                                        onClick={() => navigate('/job-list')}
                                         style={{ whiteSpace: 'nowrap' }}
                                     >
                                         Jobs

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://43.204.212.58:8080/JOBASSIST/JOBASSIST';
+const API_BASE_URL = 'http://13.232.80.171:8080/JOBASSIST/JOBASSIST';
 
 const apiClient = axios.create({
     baseURL: API_BASE_URL,

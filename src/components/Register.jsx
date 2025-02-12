@@ -11,6 +11,7 @@ function Register() {
     const [name, setName] = useState('');
     const [role, setRole] = useState('USER');
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);  
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
@@ -20,8 +21,21 @@ function Register() {
         try {
             const payload = { name, username: email, password, role };
             await apiService.post(apiEndpoints.auth.register, payload);
-            localStorage.setItem('user', JSON.stringify({ name, role }));
-            navigate('/');
+
+            const userData = { name, role };
+            localStorage.setItem('user', JSON.stringify(userData));
+
+            // ✅ Display success message
+            setSuccess(`Registration successful! Welcome, ${name}`);
+
+            // ✅ Redirect based on role after 2 seconds
+            setTimeout(() => {
+                if (role === 'ADMIN') {
+                    navigate('/create-post');
+                } else {
+                    navigate('/job-list');
+                }
+            }, 2000);
         } catch (err) {
             setError('Registration failed. Please try again.');
         }
@@ -30,6 +44,7 @@ function Register() {
     return (
         <>
             {error && <CommonAlert message={error} variant="danger" />}
+            {success && <CommonAlert message={success} variant="success" />}
             <Container className="d-flex justify-content-center align-items-center min-vh-100">
                 <Card className="p-4 shadow-lg" style={{ width: '100%', maxWidth: '400px' }}>
                     <h2 className="text-center mb-4">Register at JobPortal</h2>
