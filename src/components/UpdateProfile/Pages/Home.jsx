@@ -216,12 +216,13 @@
 
 // export default Home;
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Form, ListGroup, Row, Col, Badge, Collapse } from 'react-bootstrap';
 import { FaUser, FaCode, FaBriefcase, FaGraduationCap, FaProjectDiagram, FaLanguage, FaEnvelope, FaPhone, FaMapMarkerAlt, FaPlusCircle, FaChevronDown, FaChevronUp, FaListAlt } from 'react-icons/fa';
 import { MdOutlineEdit, MdDelete } from 'react-icons/md';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { apiService } from '../../ApiService';
+import apiEndpoints from '../../apiendpoint';
 function Home() {
     const [userDetails, setUserDetails] = useState({
         name: 'John Doe',
@@ -237,20 +238,6 @@ function Home() {
         skills: 'JavaScript, React, Node.js, Python',
         hobbies: 'Reading, Traveling, Coding',
     });
-
-    const [educationList, setEducationList] = useState([
-        { id: 1, degree: 'High School', institution: 'City High School', year: '2012', description: 'Science Major' },
-        { id: 2, degree: 'Senior Secondary', institution: 'City Senior School', year: '2014', description: 'Math and Science' },
-    ]);
-
-    const [newEducation, setNewEducation] = useState({ degree: '', institution: '', year: '', description: '' });
-
-    const [certifications, setCertifications] = useState([
-        { id: 1, certification: 'AWS Certified Developer', year: '2021' },
-        { id: 2, certification: 'Microsoft Azure Fundamentals', year: '2020' },
-    ]);
-
-    const [newCertification, setNewCertification] = useState({ certification: '', year: '' });
 
     const [employmentList, setEmploymentList] = useState([
         {
@@ -304,19 +291,92 @@ function Home() {
         setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
     };
 
-    const handleAddEducation = () => {
-        if (newEducation.degree && newEducation.institution && newEducation.year) {
-            setEducationList([...educationList, { ...newEducation, id: Math.random() }]);
-            setNewEducation({ degree: '', institution: '', year: '', description: '' });
+    const [educationList, setEducationList] = useState([]);
+    const [certifications, setCertifications] = useState([]);
+    const [newEducation, setNewEducation] = useState({ degree: '', fieldOfStudy: '', university: '', startDate: '', endDate: '', grade: '' });
+    const [newCertification, setNewCertification] = useState({ name: '', organization: '', issueDate: '', expiryDate: '' });
+
+
+    useEffect(() => {
+        fetchEducation();
+        fetchCertifications();
+    }, []);
+
+    const fetchEducation = async () => {
+        try {
+            const response = await apiService.get(apiEndpoints.profile.education.getAll);
+            setEducationList(response);
+        } catch (err) {
+            console.error('Failed to fetch education:', err);
         }
     };
 
-    const handleAddCertification = () => {
-        if (newCertification.certification && newCertification.year) {
-            setCertifications([...certifications, { ...newCertification, id: Math.random() }]);
-            setNewCertification({ certification: '', year: '' });
+    const fetchCertifications = async () => {
+        try {
+            const response = await apiService.get(apiEndpoints.profile.certification.getAll);
+            setCertifications(response);
+        } catch (err) {
+            console.error('Failed to fetch certifications:', err);
         }
     };
+
+    const handleAddEducation = async () => {
+        if (newEducation.degree && newEducation.fieldOfStudy && newEducation.university && newEducation.startDate && newEducation.endDate) {
+            try {
+                const response = await apiService.post(apiEndpoints.profile.education.add, newEducation);
+                setEducationList([...educationList, response]);
+                setNewEducation({ degree: '', fieldOfStudy: '', university: '', startDate: '', endDate: '', grade: '' });
+            } catch (err) {
+                console.error('Failed to add education:', err);
+            }
+        }
+    };
+
+    const handleDeleteEducation = async (id) => {
+        try {
+            await apiService.delete(apiEndpoints.profile.education.delete(id));
+            setEducationList(educationList.filter((edu) => edu.id !== id));
+        } catch (err) {
+            console.error('Failed to delete education:', err);
+        }
+    };
+
+    const handleAddCertification = async () => {
+        if (newCertification.name && newCertification.organization && newCertification.issueDate && newCertification.expiryDate) {
+            try {
+                const response = await apiService.post(apiEndpoints.profile.certification.add, newCertification);
+                setCertifications([...certifications, response]);
+                setNewCertification({ name: '', organization: '', issueDate: '', expiryDate: '' });
+            } catch (err) {
+                console.error('Failed to add certification:', err);
+            }
+        }
+    };
+
+    const handleDeleteCertification = async (id) => {
+        try {
+            await apiService.delete(apiEndpoints.profile.certification.delete(id));
+            setCertifications(certifications.filter((cert) => cert.id !== id));
+        } catch (err) {
+            console.error('Failed to delete certification:', err);
+        }
+    };
+
+    
+
+    // const handleAddEducation = () => {
+    //     if (newEducation.degree && newEducation.institution && newEducation.year) {
+    //         setEducationList([...educationList, { ...newEducation, id: Math.random() }]);
+    //         setNewEducation({ degree: '', institution: '', year: '', description: '' });
+    //     }
+    // };
+
+    // const handleAddCertification = () => {
+    //     if (newCertification.certification && newCertification.year) {
+    //         setCertifications([...certifications, { ...newCertification, id: Math.random() }]);
+    //         setNewCertification({ certification: '', year: '' });
+    //     }
+    // };
 
     const handleAddEmployment = () => {
         if (newEmployment.company && newEmployment.role && newEmployment.duration) {
@@ -399,7 +459,7 @@ function Home() {
 ], (item) => (
     <ListGroup.Item key={item.id}>{item.content}</ListGroup.Item>
 ), <></>)}
-                {renderSection('education', educationList, (edu) => (
+                {/* {renderSection('education', educationList, (edu) => (
                     <ListGroup.Item key={edu.id} className="d-flex justify-content-between">
                         <div>
                             <h6>{edu.degree}</h6>
@@ -446,7 +506,80 @@ function Home() {
                         </Row>
                         <Button variant="primary" className="mt-3" onClick={handleAddCertification}><FaPlusCircle /> Add Certification</Button>
                     </Form>
-                ))}
+                ))} */}
+              <Card className="mb-4 shadow-lg border-0">
+                <Card.Header className="d-flex justify-content-between align-items-center bg-primary text-white p-3 cursor-pointer" onClick={() => toggleSection('education')}>
+                    <div className="d-flex align-items-center">
+                        <FaGraduationCap className="me-2" style={{ fontSize: '1.5rem' }} />
+                        <h5 className="mb-0">Education</h5>
+                    </div>
+                    <div>{expandedSections.education ? <FaChevronUp /> : <FaChevronDown />}</div>
+                </Card.Header>
+                <Collapse in={expandedSections.education}>
+                    <Card.Body className="p-4">
+                        <ListGroup className="mb-3">
+                            {educationList.map((edu) => (
+                                <ListGroup.Item key={edu.id} className="d-flex justify-content-between">
+                                    <div>
+                                        <h6>{edu.degree} - {edu.fieldOfStudy}</h6>
+                                        <small>{edu.university} ({edu.startDate} - {edu.endDate})</small>
+                                        <p className="text-muted">Grade: {edu.grade}</p>
+                                    </div>
+                                    <div className="d-flex align-items-center">
+                                        <Button variant="outline-danger" size="sm" onClick={() => handleDeleteEducation(edu.id)}>
+                                            <MdDelete /> Delete
+                                        </Button>
+                                    </div>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+
+                        <Form>
+                            <Row className="mb-3">
+                                <Col md={2}><Form.Control placeholder="Degree" value={newEducation.degree} onChange={(e) => setNewEducation({ ...newEducation, degree: e.target.value })} /></Col>
+                                <Col md={2}><Form.Control placeholder="Field of Study" value={newEducation.fieldOfStudy} onChange={(e) => setNewEducation({ ...newEducation, fieldOfStudy: e.target.value })} /></Col>
+                                <Col md={2}><Form.Control placeholder="University" value={newEducation.university} onChange={(e) => setNewEducation({ ...newEducation, university: e.target.value })} /></Col>
+                                <Col md={2}><Form.Control placeholder="Start Year" value={newEducation.startDate} onChange={(e) => setNewEducation({ ...newEducation, startDate: e.target.value })} /></Col>
+                                <Col md={2}><Form.Control placeholder="End Year" value={newEducation.endDate} onChange={(e) => setNewEducation({ ...newEducation, endDate: e.target.value })} /></Col>
+                                <Col md={2}><Form.Control placeholder="Grade" value={newEducation.grade} onChange={(e) => setNewEducation({ ...newEducation, grade: e.target.value })} /></Col>
+                            </Row>
+                            <Button variant="primary" onClick={handleAddEducation}><FaPlusCircle /> Add Education</Button>
+                        </Form>
+                    </Card.Body>
+                </Collapse>
+            </Card>
+
+            {/* Certification Section */}
+            <Card className="mb-4 shadow-lg border-0">
+                <Card.Header className="d-flex justify-content-between align-items-center bg-primary text-white p-3 cursor-pointer" onClick={() => toggleSection('certifications')}>
+                    <div className="d-flex align-items-center">
+                        <FaProjectDiagram className="me-2" style={{ fontSize: '1.5rem' }} />
+                        <h5 className="mb-0">Certifications</h5>
+                    </div>
+                    <div>{expandedSections.certifications ? <FaChevronUp /> : <FaChevronDown />}</div>
+                </Card.Header>
+                <Collapse in={expandedSections.certifications}>
+                    <Card.Body className="p-4">
+                        <ListGroup className="mb-3">
+                            {certifications.map((cert) => (
+                                <ListGroup.Item key={cert.id} className="d-flex justify-content-between">
+                                    <div>
+                                        <h6>{cert.name}</h6>
+                                        <small>{cert.organization} ({cert.issueDate} - {cert.expiryDate})</small>
+                                    </div>
+                                    <div className="d-flex align-items-center">
+                                        <Button variant="outline-danger" size="sm" onClick={() => handleDeleteCertification(cert.id)}>
+                                            <MdDelete /> Delete
+                                        </Button>
+                                    </div>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+                        <Button variant="primary" onClick={handleAddCertification}><FaPlusCircle /> Add Certification</Button>
+                    </Card.Body>
+                </Collapse>
+            </Card>
+
     
                 {renderSection('employment', employmentList, (emp) => (
                     <ListGroup.Item key={emp.id} className="d-flex justify-content-between">
