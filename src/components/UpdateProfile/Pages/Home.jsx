@@ -239,18 +239,6 @@ function Home() {
         hobbies: 'Reading, Traveling, Coding',
     });
 
-    const [employmentList, setEmploymentList] = useState([
-        {
-            id: 1,
-            company: 'Tech Corp',
-            role: 'Front-end Developer',
-            duration: '2019-2022',
-            description: 'Developed scalable front-end applications.',
-        },
-    ]);
-
-    const [newEmployment, setNewEmployment] = useState({ company: '', role: '', duration: '', description: '' });
-
     const [languageList, setLanguageList] = useState([
         { id: 1, language: 'English', proficiency: 'Advanced' },
         { id: 2, language: 'Hindi', proficiency: 'Native' },
@@ -263,20 +251,6 @@ function Home() {
         { id: 2, skill: 'JavaScript', version: 'ES6', experience: '3 Years' },
     ]);
 
-    const [newSkill, setNewSkill] = useState({ skill: '', version: '', experience: '' });
-
-    const [projects, setProjects] = useState([
-        {
-            id: 1,
-            title: 'TEXT Changer',
-            duration: 'Jun 2024 - Present',
-            description: 'A project to transform text to different formats like uppercase, lowercase, reverse, etc.',
-            link: 'https://github.com/example/text-changer',
-        },
-    ]);
-
-    const [newProject, setNewProject] = useState({ title: '', duration: '', description: '', link: '' });
-
     const [expandedSections, setExpandedSections] = useState({
         profile: true,
         education: false,
@@ -285,21 +259,52 @@ function Home() {
         languages: false,
         itSkills: false,
         projects: false,
+        addresses:false,
     });
 
     const toggleSection = (section) => {
         setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
     };
-
+    const [workExperience, setWorkExperience] = useState([]);
+    const [skills, setSkills] = useState([]);
     const [educationList, setEducationList] = useState([]);
     const [certifications, setCertifications] = useState([]);
     const [newEducation, setNewEducation] = useState({ degree: '', fieldOfStudy: '', university: '', startDate: '', endDate: '', grade: '' });
     const [newCertification, setNewCertification] = useState({ name: '', organization: '', issueDate: '', expiryDate: '' });
+    const [newSkill, setNewSkill] = useState({ name: '', proficiencyLevel: null });
+    const [newWorkExperience, setNewWorkExperience] = useState({
+        companyName: '',
+        jobTitle: '',
+        location: '',
+        startDate: '',
+        endDate: '',
+        description: ''
+    });
 
+    const [projects, setProjects] = useState([]);
+    const [addresses, setAddresses] = useState([]);
+
+    const [newProject, setNewProject] = useState({
+        title: '',
+        description: '',
+        startDate: '',
+        endDate: ''
+    });
+
+    const [newAddress, setNewAddress] = useState({
+        city: '',
+        state: '',
+        postalCode: '',
+        country: ''
+    });
 
     useEffect(() => {
         fetchEducation();
         fetchCertifications();
+        fetchWorkExperience();
+        fetchSkills();
+        fetchProjects();
+        fetchAddresses();
     }, []);
 
     const fetchEducation = async () => {
@@ -362,26 +367,65 @@ function Home() {
         }
     };
 
-    
+    const fetchWorkExperience = async () => {
+        try {
+            const response = await apiService.get(apiEndpoints.profile.workExperience.getAll);
+            setWorkExperience(response);
+        } catch (err) {
+            console.error('Failed to fetch work experience:', err);
+        }
+    };
 
-    // const handleAddEducation = () => {
-    //     if (newEducation.degree && newEducation.institution && newEducation.year) {
-    //         setEducationList([...educationList, { ...newEducation, id: Math.random() }]);
-    //         setNewEducation({ degree: '', institution: '', year: '', description: '' });
-    //     }
-    // };
+    const fetchSkills = async () => {
+        try {
+            const response = await apiService.get(apiEndpoints.profile.skills.getAll);
+            setSkills(response);
+        } catch (err) {
+            console.error('Failed to fetch skills:', err);
+        }
+    };
 
-    // const handleAddCertification = () => {
-    //     if (newCertification.certification && newCertification.year) {
-    //         setCertifications([...certifications, { ...newCertification, id: Math.random() }]);
-    //         setNewCertification({ certification: '', year: '' });
-    //     }
-    // };
+    /** ADD DATA */
+    const handleAddWorkExperience = async () => {
+        if (newWorkExperience.companyName && newWorkExperience.jobTitle && newWorkExperience.startDate && newWorkExperience.endDate) {
+            try {
+                const response = await apiService.post(apiEndpoints.profile.workExperience.add, newWorkExperience);
+                setWorkExperience([...workExperience, response]);
+                setNewWorkExperience({ companyName: '', jobTitle: '', location: '', startDate: '', endDate: '', description: '' });
+            } catch (err) {
+                console.error('Failed to add work experience:', err);
+            }
+        }
+    };
 
-    const handleAddEmployment = () => {
-        if (newEmployment.company && newEmployment.role && newEmployment.duration) {
-            setEmploymentList([...employmentList, { ...newEmployment, id: Math.random() }]);
-            setNewEmployment({ company: '', role: '', duration: '', description: '' });
+    const handleAddSkill = async () => {
+        if (newSkill.name) {
+            try {
+                const response = await apiService.post(apiEndpoints.profile.skills.add, newSkill);
+                setSkills([...skills, response]);
+                setNewSkill({ name: '', proficiencyLevel: null });
+            } catch (err) {
+                console.error('Failed to add skill:', err);
+            }
+        }
+    };
+
+    /** DELETE DATA */
+    const handleDeleteWorkExperience = async (id) => {
+        try {
+            await apiService.delete(apiEndpoints.profile.workExperience.delete(id));
+            setWorkExperience(workExperience.filter((exp) => exp.id !== id));
+        } catch (err) {
+            console.error('Failed to delete work experience:', err);
+        }
+    };
+
+    const handleDeleteSkill = async (id) => {
+        try {
+            await apiService.delete(apiEndpoints.profile.skills.delete(id));
+            setSkills(skills.filter((skill) => skill.id !== id));
+        } catch (err) {
+            console.error('Failed to delete skill:', err);
         }
     };
 
@@ -392,17 +436,66 @@ function Home() {
         }
     };
 
-    const handleAddSkill = () => {
-        if (newSkill.skill && newSkill.version && newSkill.experience) {
-            setItSkills([...itSkills, { ...newSkill, id: Math.random() }]);
-            setNewSkill({ skill: '', version: '', experience: '' });
+     /** FETCH DATA */
+    const fetchProjects = async () => {
+        try {
+            const response = await apiService.get(apiEndpoints.profile.project.getAll);
+            setProjects(response);
+        } catch (err) {
+            console.error('Failed to fetch projects:', err);
         }
     };
 
-    const handleAddProject = () => {
-        if (newProject.title && newProject.duration && newProject.description) {
-            setProjects([...projects, { ...newProject, id: Math.random() }]);
-            setNewProject({ title: '', duration: '', description: '', link: '' });
+    const fetchAddresses = async () => {
+        try {
+            const response = await apiService.get(apiEndpoints.profile.address.getAll);
+            setAddresses(response);
+        } catch (err) {
+            console.error('Failed to fetch addresses:', err);
+        }
+    };
+
+    /** ADD DATA */
+    const handleAddProject = async () => {
+        if (newProject.title && newProject.startDate && newProject.endDate) {
+            try {
+                const response = await apiService.post(apiEndpoints.profile.project.add, newProject);
+                setProjects([...projects, response]);
+                setNewProject({ title: '', description: '', startDate: '', endDate: '' });
+            } catch (err) {
+                console.error('Failed to add project:', err);
+            }
+        }
+    };
+
+    const handleAddAddress = async () => {
+        if (newAddress.city && newAddress.state && newAddress.postalCode && newAddress.country) {
+            try {
+                const response = await apiService.post(apiEndpoints.profile.address.add, newAddress);
+                setAddresses([...addresses, response]);
+                setNewAddress({ city: '', state: '', postalCode: '', country: '' });
+            } catch (err) {
+                console.error('Failed to add address:', err);
+            }
+        }
+    };
+
+    /** DELETE DATA */
+    const handleDeleteProject = async (id) => {
+        try {
+            await apiService.delete(apiEndpoints.profile.project.delete(id));
+            setProjects(projects.filter((proj) => proj.id !== id));
+        } catch (err) {
+            console.error('Failed to delete project:', err);
+        }
+    };
+
+    const handleDeleteAddress = async (id) => {
+        try {
+            await apiService.delete(apiEndpoints.profile.address.delete(id));
+            setAddresses(addresses.filter((addr) => addr.id !== id));
+        } catch (err) {
+            console.error('Failed to delete address:', err);
         }
     };
 
@@ -459,54 +552,39 @@ function Home() {
 ], (item) => (
     <ListGroup.Item key={item.id}>{item.content}</ListGroup.Item>
 ), <></>)}
-                {/* {renderSection('education', educationList, (edu) => (
-                    <ListGroup.Item key={edu.id} className="d-flex justify-content-between">
-                        <div>
-                            <h6>{edu.degree}</h6>
-                            <small>{edu.institution} - {edu.year}</small>
-                            <p className="text-muted">{edu.description}</p>
-                        </div>
-                        <div className="d-flex align-items-center">
-                            <Button variant="outline-primary" size="sm" className="me-2"><MdOutlineEdit /> Edit</Button>
-                            <Button variant="outline-danger" size="sm" onClick={() => setEducationList(educationList.filter((e) => e.id !== edu.id))}>
-                                <MdDelete /> Delete
-                            </Button>
-                        </div>
-                    </ListGroup.Item>
-                ), (
-                    <Form>
-                        <Row className="mb-3">
-                            <Col md={3}><Form.Control placeholder="Degree" value={newEducation.degree} onChange={(e) => setNewEducation({ ...newEducation, degree: e.target.value })} /></Col>
-                            <Col md={3}><Form.Control placeholder="Institution" value={newEducation.institution} onChange={(e) => setNewEducation({ ...newEducation, institution: e.target.value })} /></Col>
-                            <Col md={2}><Form.Control placeholder="Year" value={newEducation.year} onChange={(e) => setNewEducation({ ...newEducation, year: e.target.value })} /></Col>
-                            <Col md={4}><Form.Control placeholder="Description" value={newEducation.description} onChange={(e) => setNewEducation({ ...newEducation, description: e.target.value })} /></Col>
-                        </Row>
-                        <Button variant="primary" onClick={handleAddEducation}><FaPlusCircle /> Add Education</Button>
-                    </Form>
-                ))}
-    
-                {renderSection('certifications', certifications, (cert) => (
-                    <ListGroup.Item key={cert.id} className="d-flex justify-content-between">
-                        <div>
-                            <h6>{cert.certification}</h6>
-                            <small>{cert.year}</small>
-                        </div>
-                        <div className="d-flex align-items-center">
-                            <Button variant="outline-primary" size="sm" className="me-2"><MdOutlineEdit /> Edit</Button>
-                            <Button variant="outline-danger" size="sm" onClick={() => setCertifications(certifications.filter((c) => c.id !== cert.id))}>
-                                <MdDelete /> Delete
-                            </Button>
-                        </div>
-                    </ListGroup.Item>
-                ), (
-                    <Form>
-                        <Row>
-                            <Col md={8}><Form.Control placeholder="Certification" value={newCertification.certification} onChange={(e) => setNewCertification({ ...newCertification, certification: e.target.value })} /></Col>
-                            <Col md={4}><Form.Control placeholder="Year" value={newCertification.year} onChange={(e) => setNewCertification({ ...newCertification, year: e.target.value })} /></Col>
-                        </Row>
-                        <Button variant="primary" className="mt-3" onClick={handleAddCertification}><FaPlusCircle /> Add Certification</Button>
-                    </Form>
-                ))} */}
+
+          {/* Skills Section */}
+          <Card className="mb-4 shadow-lg border-0">
+                <Card.Header className="d-flex justify-content-between align-items-center bg-primary text-white p-3 cursor-pointer" onClick={() => toggleSection('skills')}>
+                    <div className="d-flex align-items-center">
+                        <FaCode className="me-2" style={{ fontSize: '1.5rem' }} />
+                        <h5 className="mb-0">Skills</h5>
+                    </div>
+                    <div>{expandedSections.skills ? <FaChevronUp /> : <FaChevronDown />}</div>
+                </Card.Header>
+                <Collapse in={expandedSections.skills}>
+                    <Card.Body className="p-4">
+                        <ListGroup className="mb-3">
+                            {skills.map((skill) => (
+                                <ListGroup.Item key={skill.id} className="d-flex justify-content-between">
+                                    <h6>{skill.name}</h6>
+                                    <Button variant="outline-danger" size="sm" onClick={() => handleDeleteSkill(skill.id)}>
+                                        <MdDelete /> Delete
+                                    </Button>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+
+                        <Form>
+                            <Row className="mb-3">
+                                <Col md={6}><Form.Control placeholder="Skill Name" value={newSkill.name} onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })} /></Col>
+                            </Row>
+                            <Button variant="primary" onClick={handleAddSkill}><FaPlusCircle /> Add Skill</Button>
+                        </Form>
+                    </Card.Body>
+                </Collapse>
+            </Card>
+
               <Card className="mb-4 shadow-lg border-0">
                 <Card.Header className="d-flex justify-content-between align-items-center bg-primary text-white p-3 cursor-pointer" onClick={() => toggleSection('education')}>
                     <div className="d-flex align-items-center">
@@ -548,7 +626,7 @@ function Home() {
                     </Card.Body>
                 </Collapse>
             </Card>
-
+        
             {/* Certification Section */}
             <Card className="mb-4 shadow-lg border-0">
                 <Card.Header className="d-flex justify-content-between align-items-center bg-primary text-white p-3 cursor-pointer" onClick={() => toggleSection('certifications')}>
@@ -580,32 +658,48 @@ function Home() {
                 </Collapse>
             </Card>
 
-    
-                {renderSection('employment', employmentList, (emp) => (
-                    <ListGroup.Item key={emp.id} className="d-flex justify-content-between">
-                        <div>
-                            <h6>{emp.role} at {emp.company}</h6>
-                            <small>{emp.duration}</small>
-                            <p className="text-muted">{emp.description}</p>
-                        </div>
-                        <div className="d-flex align-items-center">
-                            <Button variant="outline-primary" size="sm" className="me-2"><MdOutlineEdit /> Edit</Button>
-                            <Button variant="outline-danger" size="sm" onClick={() => setEmploymentList(employmentList.filter((e) => e.id !== emp.id))}>
-                                <MdDelete /> Delete
-                            </Button>
-                        </div>
-                    </ListGroup.Item>
-                ), (
-                    <Form>
-                        <Row className="mb-3">
-                            <Col md={3}><Form.Control placeholder="Company" value={newEmployment.company} onChange={(e) => setNewEmployment({ ...newEmployment, company: e.target.value })} /></Col>
-                            <Col md={3}><Form.Control placeholder="Role" value={newEmployment.role} onChange={(e) => setNewEmployment({ ...newEmployment, role: e.target.value })} /></Col>
-                            <Col md={3}><Form.Control placeholder="Duration" value={newEmployment.duration} onChange={(e) => setNewEmployment({ ...newEmployment, duration: e.target.value })} /></Col>
-                            <Col md={3}><Form.Control placeholder="Description" value={newEmployment.description} onChange={(e) => setNewEmployment({ ...newEmployment, description: e.target.value })} /></Col>
-                        </Row>
-                        <Button variant="primary" onClick={handleAddEmployment}><FaPlusCircle /> Add Employment</Button>
-                    </Form>
-                ))}
+            {/* Work Experience Section */}
+            <Card className="mb-4 shadow-lg border-0">
+                <Card.Header className="d-flex justify-content-between align-items-center bg-primary text-white p-3 cursor-pointer" onClick={() => toggleSection('workExperience')}>
+                    <div className="d-flex align-items-center">
+                        <FaBriefcase className="me-2" style={{ fontSize: '1.5rem' }} />
+                        <h5 className="mb-0">Work Experience</h5>
+                    </div>
+                    <div>{expandedSections.workExperience ? <FaChevronUp /> : <FaChevronDown />}</div>
+                </Card.Header>
+                <Collapse in={expandedSections.workExperience}>
+                    <Card.Body className="p-4">
+                        <ListGroup className="mb-3">
+                            {workExperience.map((exp) => (
+                                <ListGroup.Item key={exp.id} className="d-flex justify-content-between">
+                                    <div>
+                                        <h6>{exp.jobTitle} at {exp.companyName}</h6>
+                                        <small>{exp.location}</small>
+                                        <small> ({exp.startDate} - {exp.endDate})</small>
+                                        <p className="text-muted">{exp.description}</p>
+                                    </div>
+                                    <Button variant="outline-danger" size="sm" onClick={() => handleDeleteWorkExperience(exp.id)}>
+                                        <MdDelete /> Delete
+                                    </Button>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+
+                        <Form>
+                            <Row className="mb-3">
+                                <Col md={3}><Form.Control placeholder="Company Name" value={newWorkExperience.companyName} onChange={(e) => setNewWorkExperience({ ...newWorkExperience, companyName: e.target.value })} /></Col>
+                                <Col md={3}><Form.Control placeholder="Job Title" value={newWorkExperience.jobTitle} onChange={(e) => setNewWorkExperience({ ...newWorkExperience, jobTitle: e.target.value })} /></Col>
+                                <Col md={3}><Form.Control placeholder="Location" value={newWorkExperience.location} onChange={(e) => setNewWorkExperience({ ...newWorkExperience, location: e.target.value })} /></Col>
+                            </Row>
+                            <Row className="mb-3">
+                                <Col md={2}><Form.Control placeholder="Start Date" value={newWorkExperience.startDate} onChange={(e) => setNewWorkExperience({ ...newWorkExperience, startDate: e.target.value })} /></Col>
+                                <Col md={2}><Form.Control placeholder="End Date" value={newWorkExperience.endDate} onChange={(e) => setNewWorkExperience({ ...newWorkExperience, endDate: e.target.value })} /></Col>
+                            </Row>
+                            <Button variant="primary" onClick={handleAddWorkExperience}><FaPlusCircle /> Add Work Experience</Button>
+                        </Form>
+                    </Card.Body>
+                </Collapse>
+            </Card>
     
                 {renderSection('languages', languageList, (lang) => (
                     <ListGroup.Item key={lang.id} className="d-flex justify-content-between">
@@ -629,59 +723,85 @@ function Home() {
                         <Button variant="primary" onClick={handleAddLanguage}><FaPlusCircle /> Add Language</Button>
                     </Form>
                 ))}
-    
-                {renderSection('itSkills', itSkills, (skill) => (
-                    <ListGroup.Item key={skill.id} className="d-flex justify-content-between">
-                        <div>
-                            <h6>{skill.skill} (Version: {skill.version})</h6>
-                            <small>{skill.experience}</small>
-                        </div>
-                        <div className="d-flex align-items-center">
-                            <Button variant="outline-primary" size="sm" className="me-2"><MdOutlineEdit /> Edit</Button>
-                            <Button variant="outline-danger" size="sm" onClick={() => setItSkills(itSkills.filter((s) => s.id !== skill.id))}>
-                                <MdDelete /> Delete
-                            </Button>
-                        </div>
-                    </ListGroup.Item>
-                ), (
-                    <Form>
-                        <Row className="mb-3">
-                            <Col md={4}><Form.Control placeholder="Skill" value={newSkill.skill} onChange={(e) => setNewSkill({ ...newSkill, skill: e.target.value })} /></Col>
-                            <Col md={4}><Form.Control placeholder="Version" value={newSkill.version} onChange={(e) => setNewSkill({ ...newSkill, version: e.target.value })} /></Col>
-                            <Col md={4}><Form.Control placeholder="Experience" value={newSkill.experience} onChange={(e) => setNewSkill({ ...newSkill, experience: e.target.value })} /></Col>
-                        </Row>
-                        <Button variant="primary" onClick={handleAddSkill}><FaPlusCircle /> Add Skill</Button>
-                    </Form>
-                ))}
-    
-                {renderSection('projects', projects, (project) => (
-                    <ListGroup.Item key={project.id} className="d-flex justify-content-between">
-                        <div>
-                            <h6>{project.title}</h6>
-                            <small>{project.duration}</small>
-                            <p className="text-muted">{project.description}</p>
-                            {project.link && <a href={project.link} target="_blank" rel="noopener noreferrer">Project Link</a>}
-                        </div>
-                        <div className="d-flex align-items-center">
-                            <Button variant="outline-primary" size="sm" className="me-2"><MdOutlineEdit /> Edit</Button>
-                            <Button variant="outline-danger" size="sm" onClick={() => setProjects(projects.filter((p) => p.id !== project.id))}>
-                                <MdDelete /> Delete
-                            </Button>
-                        </div>
-                    </ListGroup.Item>
-                ), (
-                    <Form>
-                        <Row className="mb-3">
-                            <Col md={4}><Form.Control placeholder="Project Title" value={newProject.title} onChange={(e) => setNewProject({ ...newProject, title: e.target.value })} /></Col>
-                            <Col md={4}><Form.Control placeholder="Duration" value={newProject.duration} onChange={(e) => setNewProject({ ...newProject, duration: e.target.value })} /></Col>
-                            <Col md={4}><Form.Control placeholder="Link" value={newProject.link} onChange={(e) => setNewProject({ ...newProject, link: e.target.value })} /></Col>
-                        </Row>
-                        <Row>
-                            <Col><Form.Control placeholder="Description" value={newProject.description} onChange={(e) => setNewProject({ ...newProject, description: e.target.value })} /></Col>
-                        </Row>
-                        <Button variant="primary" onClick={handleAddProject} className="mt-3"><FaPlusCircle /> Add Project</Button>
-                    </Form>
-                ))}
+                  {/* Projects Section */}
+            <Card className="mb-4 shadow-lg border-0">
+                <Card.Header className="d-flex justify-content-between align-items-center bg-primary text-white p-3 cursor-pointer" onClick={() => toggleSection('projects')}>
+                    <div className="d-flex align-items-center">
+                        <FaProjectDiagram className="me-2" style={{ fontSize: '1.5rem' }} />
+                        <h5 className="mb-0">Projects</h5>
+                    </div>
+                    <div>{expandedSections.projects ? <FaChevronUp /> : <FaChevronDown />}</div>
+                </Card.Header>
+                <Collapse in={expandedSections.projects}>
+                    <Card.Body className="p-4">
+                        <ListGroup className="mb-3">
+                            {projects.map((proj) => (
+                                <ListGroup.Item key={proj.id} className="d-flex justify-content-between">
+                                    <div>
+                                        <h6>{proj.title}</h6>
+                                        <small>({proj.startDate} - {proj.endDate})</small>
+                                        <p className="text-muted">{proj.description || 'No description provided'}</p>
+                                    </div>
+                                    <Button variant="outline-danger" size="sm" onClick={() => handleDeleteProject(proj.id)}>
+                                        <MdDelete /> Delete
+                                    </Button>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+
+                        <Form>
+                            <Row className="mb-3">
+                                <Col md={4}><Form.Control placeholder="Project Title" value={newProject.title} onChange={(e) => setNewProject({ ...newProject, title: e.target.value })} /></Col>
+                                <Col md={4}><Form.Control placeholder="Start Year" value={newProject.startDate} onChange={(e) => setNewProject({ ...newProject, startDate: e.target.value })} /></Col>
+                                <Col md={4}><Form.Control placeholder="End Year" value={newProject.endDate} onChange={(e) => setNewProject({ ...newProject, endDate: e.target.value })} /></Col>
+                            </Row>
+                            <Row>
+                                <Col><Form.Control placeholder="Description (Optional)" value={newProject.description} onChange={(e) => setNewProject({ ...newProject, description: e.target.value })} /></Col>
+                            </Row>
+                            <Button variant="primary" onClick={handleAddProject} className="mt-3"><FaPlusCircle /> Add Project</Button>
+                        </Form>
+                    </Card.Body>
+                </Collapse>
+            </Card>
+                 {/* Address Section */}
+            <Card className="mb-4 shadow-lg border-0">
+                <Card.Header className="d-flex justify-content-between align-items-center bg-primary text-white p-3 cursor-pointer" onClick={() => toggleSection('addresses')}>
+                    <div className="d-flex align-items-center">
+                        <FaMapMarkerAlt className="me-2" style={{ fontSize: '1.5rem' }} />
+                        <h5 className="mb-0">Address</h5>
+                    </div>
+                    <div>{expandedSections.addresses ? <FaChevronUp /> : <FaChevronDown />}</div>
+                </Card.Header>
+                <Collapse in={expandedSections.addresses}>
+                    <Card.Body className="p-4">
+                        <ListGroup className="mb-3">
+                            {addresses.map((addr) => (
+                                <ListGroup.Item key={addr.id} className="d-flex justify-content-between">
+                                    <div>
+                                        <h6>{addr.city}, {addr.state}, {addr.country} - {addr.postalCode}</h6>
+                                    </div>
+                                    <Button variant="outline-danger" size="sm" onClick={() => handleDeleteAddress(addr.id)}>
+                                        <MdDelete /> Delete
+                                    </Button>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+
+                        <Form>
+                            <Row className="mb-3">
+                                <Col md={4}><Form.Control placeholder="City" value={newAddress.city} onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })} /></Col>
+                                <Col md={4}><Form.Control placeholder="State" value={newAddress.state} onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })} /></Col>
+                                <Col md={4}><Form.Control placeholder="Country" value={newAddress.country} onChange={(e) => setNewAddress({ ...newAddress, country: e.target.value })} /></Col>
+                            </Row>
+                            <Row className="mb-3">
+                                <Col md={4}><Form.Control placeholder="Postal Code" value={newAddress.postalCode} onChange={(e) => setNewAddress({ ...newAddress, postalCode: e.target.value })} /></Col>
+                            </Row>
+                            <Button variant="primary" onClick={handleAddAddress}><FaPlusCircle /> Add Address</Button>
+                        </Form>
+                    </Card.Body>
+                </Collapse>
+            </Card>
+
             </Container>
         );
     }
