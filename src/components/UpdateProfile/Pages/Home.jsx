@@ -1,228 +1,11 @@
-// import React, { useState } from 'react';
-// import { Container, Card, Button, Form, ListGroup, Row, Col, Badge, Collapse } from 'react-bootstrap';
-// import { FaUser, FaCode, FaBriefcase, FaGraduationCap, FaProjectDiagram, FaLanguage, FaEnvelope, FaPhone, FaMapMarkerAlt, FaPlusCircle, FaChevronDown, FaChevronUp } from 'react-icons/fa';
-// import { MdOutlineEdit, MdDelete } from 'react-icons/md';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-
-// function Home() {
-//     const [userDetails, setUserDetails] = useState({
-//         name: 'John Doe',
-//         username: 'johndoe@example.com',
-//         phone: '+123456789',
-//         address: '123 Main St, City, Country',
-//         linkedin: 'https://linkedin.com/in/johndoe',
-//         github: 'https://github.com/johndoe',
-//         portfolio: 'https://johndoe.dev',
-//         jobTitle: 'Software Engineer',
-//         expectedSalary: '$100k',
-//         summary: 'A highly motivated software engineer specializing in full-stack development.',
-//         skills: 'JavaScript, React, Node.js, Python',
-//     });
-
-//     const [educationList, setEducationList] = useState([
-//         { id: 1, degree: 'High School', institution: 'City High School', year: '2012', description: 'Science Major' },
-//         { id: 2, degree: 'Senior Secondary', institution: 'City Senior School', year: '2014', description: 'Math and Science' },
-//     ]);
-
-//     const [newEducation, setNewEducation] = useState({ degree: '', institution: '', year: '', description: '' });
-
-//     const [certifications, setCertifications] = useState([
-//         { id: 1, certification: 'AWS Certified Developer', year: '2021' },
-//         { id: 2, certification: 'Microsoft Azure Fundamentals', year: '2020' },
-//     ]);
-
-//     const [newCertification, setNewCertification] = useState({ certification: '', year: '' });
-
-//     const [employmentList, setEmploymentList] = useState([
-//         {
-//             id: 1,
-//             company: 'Tech Corp',
-//             role: 'Front-end Developer',
-//             duration: '2019-2022',
-//             description: 'Developed scalable front-end applications.',
-//         },
-//     ]);
-
-//     const [languageList, setLanguageList] = useState([
-//         { id: 1, language: 'English', proficiency: 'Advanced' },
-//         { id: 2, language: 'Hindi', proficiency: 'Native' },
-//     ]);
-
-//     const [itSkills, setItSkills] = useState([
-//         { id: 1, skill: 'React.js', version: '18', experience: '2 Years' },
-//         { id: 2, skill: 'JavaScript', version: 'ES6', experience: '3 Years' },
-//     ]);
-
-//     const [projects, setProjects] = useState([
-//         {
-//             id: 1,
-//             title: 'TEXT Changer',
-//             duration: 'Jun 2024 - Present',
-//             description: 'A project to transform text to different formats like uppercase, lowercase, reverse, etc.',
-//             link: 'https://github.com/example/text-changer',
-//         },
-//     ]);
-
-//     const [expandedSections, setExpandedSections] = useState({
-//         profile: true,
-//         education: false,
-//         certifications: false,
-//         employment: false,
-//         languages: false,
-//         itSkills: false,
-//         projects: false,
-//     });
-
-//     const toggleSection = (section) => {
-//         setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
-//     };
-
-//     const handleAddEducation = () => {
-//         if (newEducation.degree && newEducation.institution && newEducation.year) {
-//             setEducationList([...educationList, { ...newEducation, id: Math.random() }]);
-//             setNewEducation({ degree: '', institution: '', year: '', description: '' });
-//         }
-//     };
-
-//     const handleAddCertification = () => {
-//         if (newCertification.certification && newCertification.year) {
-//             setCertifications([...certifications, { ...newCertification, id: Math.random() }]);
-//             setNewCertification({ certification: '', year: '' });
-//         }
-//     };
-
-//     const renderProfileSection = () => (
-//         <Card className="mb-4 shadow-lg border-0">
-//             <Card.Header
-//                 className="d-flex justify-content-between align-items-center bg-primary text-white p-3 rounded-top cursor-pointer"
-//                 onClick={() => toggleSection('profile')}
-//             >
-//                 <div className="d-flex align-items-center">
-//                     <FaUser className="me-2" style={{ fontSize: '1.5rem' }} />
-//                     <h5 className="mb-0">Profile Information</h5>
-//                 </div>
-//                 <div>{expandedSections.profile ? <FaChevronUp /> : <FaChevronDown />}</div>
-//             </Card.Header>
-//             <Collapse in={expandedSections.profile}>
-//                 <Card.Body className="p-4">
-//                     <h4 className="text-dark mb-3">{userDetails.name}</h4>
-//                     <p className="text-muted mb-2"><FaEnvelope /> {userDetails.username}</p>
-//                     <p className="text-muted mb-2"><FaPhone /> {userDetails.phone}</p>
-//                     <p className="text-muted mb-2"><FaMapMarkerAlt /> {userDetails.address}</p>
-//                     <p className="text-muted mb-2"><strong>LinkedIn:</strong> <a href={userDetails.linkedin} target="_blank" rel="noopener noreferrer">{userDetails.linkedin}</a></p>
-//                     <p className="text-muted mb-2"><strong>GitHub:</strong> <a href={userDetails.github} target="_blank" rel="noopener noreferrer">{userDetails.github}</a></p>
-//                     <p className="text-muted mb-2"><strong>Portfolio:</strong> <a href={userDetails.portfolio} target="_blank" rel="noopener noreferrer">{userDetails.portfolio}</a></p>
-//                     <Badge bg="primary" className="px-3 py-2">{userDetails.jobTitle}</Badge>
-//                 </Card.Body>
-//             </Collapse>
-//         </Card>
-//     );
-
-//     const renderEducationSection = () => (
-//         <Card className="mb-4 shadow-lg border-0">
-//             <Card.Header
-//                 className="d-flex justify-content-between align-items-center bg-primary text-white p-3 rounded-top cursor-pointer"
-//                 onClick={() => toggleSection('education')}
-//             >
-//                 <div className="d-flex align-items-center">
-//                     <FaGraduationCap className="me-2" style={{ fontSize: '1.5rem' }} />
-//                     <h5 className="mb-0">Education</h5>
-//                 </div>
-//                 <div>{expandedSections.education ? <FaChevronUp /> : <FaChevronDown />}</div>
-//             </Card.Header>
-//             <Collapse in={expandedSections.education}>
-//                 <Card.Body className="p-4">
-//                     <ListGroup className="mb-3">
-//                         {educationList.map((edu) => (
-//                             <ListGroup.Item key={edu.id} className="d-flex justify-content-between">
-//                                 <div>
-//                                     <h6>{edu.degree}</h6>
-//                                     <small>{edu.institution} - {edu.year}</small>
-//                                     <p className="text-muted">{edu.description}</p>
-//                                 </div>
-//                                 <div className="d-flex align-items-center">
-//                                     <Button variant="outline-primary" size="sm" className="me-2"><MdOutlineEdit /> Edit</Button>
-//                                     <Button variant="outline-danger" size="sm" onClick={() => setEducationList(educationList.filter((e) => e.id !== edu.id))}>
-//                                         <MdDelete /> Delete
-//                                     </Button>
-//                                 </div>
-//                             </ListGroup.Item>
-//                         ))}
-//                     </ListGroup>
-//                     <Form>
-//                         <Row className="mb-3">
-//                             <Col md={3}><Form.Control placeholder="Degree" value={newEducation.degree} onChange={(e) => setNewEducation({ ...newEducation, degree: e.target.value })} /></Col>
-//                             <Col md={3}><Form.Control placeholder="Institution" value={newEducation.institution} onChange={(e) => setNewEducation({ ...newEducation, institution: e.target.value })} /></Col>
-//                             <Col md={2}><Form.Control placeholder="Year" value={newEducation.year} onChange={(e) => setNewEducation({ ...newEducation, year: e.target.value })} /></Col>
-//                             <Col md={4}><Form.Control placeholder="Description" value={newEducation.description} onChange={(e) => setNewEducation({ ...newEducation, description: e.target.value })} /></Col>
-//                         </Row>
-//                         <Button variant="primary" onClick={handleAddEducation}><FaPlusCircle /> Add Education</Button>
-//                     </Form>
-//                 </Card.Body>
-//             </Collapse>
-//         </Card>
-//     );
-
-//     const renderCertificationsSection = () => (
-//         <Card className="mb-4 shadow-lg border-0">
-//             <Card.Header
-//                 className="d-flex justify-content-between align-items-center bg-primary text-white p-3 rounded-top cursor-pointer"
-//                 onClick={() => toggleSection('certifications')}
-//             >
-//                 <div className="d-flex align-items-center">
-//                     <FaProjectDiagram className="me-2" style={{ fontSize: '1.5rem' }} />
-//                     <h5 className="mb-0">Certifications</h5>
-//                 </div>
-//                 <div>{expandedSections.certifications ? <FaChevronUp /> : <FaChevronDown />}</div>
-//             </Card.Header>
-//             <Collapse in={expandedSections.certifications}>
-//                 <Card.Body className="p-4">
-//                     <ListGroup className="mb-3">
-//                         {certifications.map((cert) => (
-//                             <ListGroup.Item key={cert.id} className="d-flex justify-content-between">
-//                                 <div>
-//                                     <h6>{cert.certification}</h6>
-//                                     <small>{cert.year}</small>
-//                                 </div>
-//                                 <div className="d-flex align-items-center">
-//                                     <Button variant="outline-primary" size="sm" className="me-2"><MdOutlineEdit /> Edit</Button>
-//                                     <Button variant="outline-danger" size="sm" onClick={() => setCertifications(certifications.filter((c) => c.id !== cert.id))}>
-//                                         <MdDelete /> Delete
-//                                     </Button>
-//                                 </div>
-//                             </ListGroup.Item>
-//                         ))}
-//                     </ListGroup>
-//                     <Form>
-//                         <Row>
-//                             <Col md={8}><Form.Control placeholder="Certification" value={newCertification.certification} onChange={(e) => setNewCertification({ ...newCertification, certification: e.target.value })} /></Col>
-//                             <Col md={4}><Form.Control placeholder="Year" value={newCertification.year} onChange={(e) => setNewCertification({ ...newCertification, year: e.target.value })} /></Col>
-//                         </Row>
-//                         <Button variant="primary" className="mt-3" onClick={handleAddCertification}><FaPlusCircle /> Add Certification</Button>
-//                     </Form>
-//                 </Card.Body>
-//             </Collapse>
-//         </Card>
-//     );
-
-//     return (
-//         <Container fluid className="py-5">
-//             {renderProfileSection()}
-//             {renderEducationSection()}
-//             {renderCertificationsSection()}
-//         </Container>
-//     );
-// }
-
-// export default Home;
-
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Form, ListGroup, Row, Col, Badge, Collapse } from 'react-bootstrap';
 import { FaUser, FaCode, FaBriefcase, FaGraduationCap, FaProjectDiagram, FaLanguage, FaEnvelope, FaPhone, FaMapMarkerAlt, FaPlusCircle, FaChevronDown, FaChevronUp, FaListAlt } from 'react-icons/fa';
-import { MdOutlineEdit, MdDelete } from 'react-icons/md';
+import { MdOutlineEdit, MdDelete, MdSave, MdCancel } from 'react-icons/md';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { apiService } from '../../ApiService';
 import apiEndpoints from '../../apiendpoint';
+import Swal from 'sweetalert2';
 function Home() {
     const [userDetails, setUserDetails] = useState({
         name: 'John Doe',
@@ -272,6 +55,7 @@ function Home() {
     const [newEducation, setNewEducation] = useState({ degree: '', fieldOfStudy: '', university: '', startDate: '', endDate: '', grade: '' });
     const [newCertification, setNewCertification] = useState({ name: '', organization: '', issueDate: '', expiryDate: '' });
     const [newSkill, setNewSkill] = useState({ name: '', proficiencyLevel: null });
+    const [editSkill, setEditSkill] = useState(null);
     const [newWorkExperience, setNewWorkExperience] = useState({
         companyName: '',
         jobTitle: '',
@@ -376,15 +160,6 @@ function Home() {
         }
     };
 
-    const fetchSkills = async () => {
-        try {
-            const response = await apiService.get(apiEndpoints.profile.skills.getAll);
-            setSkills(response);
-        } catch (err) {
-            console.error('Failed to fetch skills:', err);
-        }
-    };
-
     /** ADD DATA */
     const handleAddWorkExperience = async () => {
         if (newWorkExperience.companyName && newWorkExperience.jobTitle && newWorkExperience.startDate && newWorkExperience.endDate) {
@@ -394,18 +169,6 @@ function Home() {
                 setNewWorkExperience({ companyName: '', jobTitle: '', location: '', startDate: '', endDate: '', description: '' });
             } catch (err) {
                 console.error('Failed to add work experience:', err);
-            }
-        }
-    };
-
-    const handleAddSkill = async () => {
-        if (newSkill.name) {
-            try {
-                const response = await apiService.post(apiEndpoints.profile.skills.add, newSkill);
-                setSkills([...skills, response]);
-                setNewSkill({ name: '', proficiencyLevel: null });
-            } catch (err) {
-                console.error('Failed to add skill:', err);
             }
         }
     };
@@ -420,14 +183,6 @@ function Home() {
         }
     };
 
-    const handleDeleteSkill = async (id) => {
-        try {
-            await apiService.delete(apiEndpoints.profile.skills.delete(id));
-            setSkills(skills.filter((skill) => skill.id !== id));
-        } catch (err) {
-            console.error('Failed to delete skill:', err);
-        }
-    };
 
     const handleAddLanguage = () => {
         if (newLanguage.language && newLanguage.proficiency) {
@@ -448,12 +203,13 @@ function Home() {
 
     const fetchAddresses = async () => {
         try {
-            const response = await apiService.get(apiEndpoints.profile.address.getAll);
-            setAddresses(response);
+            const response = await apiService.get(apiEndpoints.profile.address.get);
+            setAddresses([response]); 
         } catch (err) {
-            console.error('Failed to fetch addresses:', err);
+            console.error('Failed to fetch address:', err);
         }
     };
+    
 
     /** ADD DATA */
     const handleAddProject = async () => {
@@ -498,6 +254,72 @@ function Home() {
             console.error('Failed to delete address:', err);
         }
     };
+
+    const fetchSkills = async () => {
+        try {
+            const response = await apiService.get(apiEndpoints.profile.skills.getAll);
+            setSkills(response);
+        } catch (err) {
+            console.error('Failed to fetch skills:', err);
+        }
+    };
+
+    const handleAddSkill = async () => {
+        if (newSkill.name) {
+            try {
+                const response = await apiService.post(apiEndpoints.profile.skills.add, newSkill);
+                setSkills([...skills, response]);
+                setNewSkill({ name: '', proficiencyLevel: '' });
+            } catch (err) {
+                console.error('Failed to add skill:', err);
+            }
+        }
+    };
+
+    const handleEditSkill = (skill) => {
+        setEditSkill({ ...skill });
+    };
+
+    const handleSaveSkill = async () => {
+        if (editSkill) {
+            try {
+                await apiService.put(apiEndpoints.profile.skills.update(editSkill.id), editSkill);
+                setSkills(skills.map((skill) => (skill.id === editSkill.id ? editSkill : skill)));
+                setEditSkill(null);
+            } catch (err) {
+                console.error('Failed to update skill:', err);
+            }
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setEditSkill(null);
+    };
+
+    const handleDeleteSkill = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This skill will be permanently deleted!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await apiService.delete(apiEndpoints.profile.skills.delete(id));
+                    setSkills(skills.filter((skill) => skill.id !== id));
+                    Swal.fire('Deleted!', 'Your skill has been removed.', 'success');
+                } catch (err) {
+                    Swal.fire('Error!', 'Failed to delete skill.', 'error');
+                }
+            }
+        });
+    };
+    
+
 
     const renderSection = (title, items, renderItem, addItem) => (
         <Card className="mb-4 shadow-lg border-0">
@@ -566,20 +388,96 @@ function Home() {
                     <Card.Body className="p-4">
                         <ListGroup className="mb-3">
                             {skills.map((skill) => (
-                                <ListGroup.Item key={skill.id} className="d-flex justify-content-between">
-                                    <h6>{skill.name}</h6>
-                                    <Button variant="outline-danger" size="sm" onClick={() => handleDeleteSkill(skill.id)}>
-                                        <MdDelete /> Delete
-                                    </Button>
+                                <ListGroup.Item key={skill.id} className="d-flex justify-content-between align-items-center p-3" style={{ borderRadius: '10px', background: '#f9f9f9' }}>
+                                    {editSkill && editSkill.id === skill.id ? (
+                                        <Form.Control
+                                            value={editSkill.name}
+                                            onChange={(e) => setEditSkill({ ...editSkill, name: e.target.value })}
+                                            style={{
+                                                flex: 1,
+                                                borderRadius: '8px',
+                                                border: '1px solid #ccc',
+                                                padding: '5px 10px',
+                                            }}
+                                        />
+                                    ) : (
+                                        <h6 className="m-0">{skill.name}</h6>
+                                    )}
+
+                                    <div>
+                                        {editSkill && editSkill.id === skill.id ? (
+                                            <>
+                                                <Button
+                                                    variant="success"
+                                                    size="sm"
+                                                    className="me-2"
+                                                    onClick={handleSaveSkill}
+                                                    style={{ borderRadius: '8px', padding: '5px 10px' }}
+                                                >
+                                                    <MdSave className="me-1" /> Save
+                                                </Button>
+                                                <Button
+                                                    variant="outline-secondary"
+                                                    size="sm"
+                                                    onClick={handleCancelEdit}
+                                                    style={{ borderRadius: '8px', padding: '5px 10px' }}
+                                                >
+                                                    <MdCancel className="me-1" /> Cancel
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Button
+                                                    variant="outline-primary"
+                                                    size="sm"
+                                                    className="me-2"
+                                                    onClick={() => handleEditSkill(skill)}
+                                                    style={{ borderRadius: '8px', padding: '5px 10px' }}
+                                                >
+                                                    <MdOutlineEdit className="me-1" /> Edit
+                                                </Button>
+                                                <Button
+                                                    variant="outline-danger"
+                                                    size="sm"
+                                                    onClick={() => handleDeleteSkill(skill.id)}
+                                                    style={{ borderRadius: '8px', padding: '5px 10px' }}
+                                                >
+                                                    <MdDelete className="me-1" /> Delete
+                                                </Button>
+                                            </>
+                                        )}
+                                    </div>
                                 </ListGroup.Item>
                             ))}
                         </ListGroup>
 
+                        {/* Add Skill Form */}
                         <Form>
                             <Row className="mb-3">
-                                <Col md={6}><Form.Control placeholder="Skill Name" value={newSkill.name} onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })} /></Col>
+                                <Col md={6}>
+                                    <Form.Control
+                                        placeholder="Skill Name"
+                                        value={newSkill.name}
+                                        onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
+                                        style={{
+                                            borderRadius: '8px',
+                                            border: '1px solid #ccc',
+                                            padding: '8px 10px',
+                                        }}
+                                    />
+                                </Col>
                             </Row>
-                            <Button variant="primary" onClick={handleAddSkill}><FaPlusCircle /> Add Skill</Button>
+                            <Button
+                                variant="primary"
+                                onClick={handleAddSkill}
+                                style={{
+                                    borderRadius: '8px',
+                                    padding: '8px 15px',
+                                    fontSize: '14px',
+                                }}
+                            >
+                                <FaPlusCircle className="me-1" /> Add Skill
+                            </Button>
                         </Form>
                     </Card.Body>
                 </Collapse>

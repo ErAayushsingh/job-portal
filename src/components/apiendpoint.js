@@ -16,8 +16,8 @@ const apiEndpoints = {
     profile: {
         address: {
             add: `${PRIVATE_BASE_URL}/addAddress`,
-            get: (id) => `${PRIVATE_BASE_URL}/getAddress/${id}`,
-            update: (id) => `${PRIVATE_BASE_URL}/updateAddress/${id}`,
+            get: `${PRIVATE_BASE_URL}/getAddress`,  
+            update: `${PRIVATE_BASE_URL}/updateAddress`,
         },
         certification: {
             add: `${PRIVATE_BASE_URL}/addCertification`,
