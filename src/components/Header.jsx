@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, NavDropdown, Form, Button, FormControl } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import apiService from './ApiService';
+import {apiService} from './ApiService';
 import apiEndpoints from './apiendpoint';
 import CommonAlert from './Common/CommonAlert';
 

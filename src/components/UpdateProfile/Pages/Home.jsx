@@ -216,7 +216,6 @@
 
 // export default Home;
 
-
 import React, { useState } from 'react';
 import { Container, Card, Button, Form, ListGroup, Row, Col, Badge, Collapse } from 'react-bootstrap';
 import { FaUser, FaCode, FaBriefcase, FaGraduationCap, FaProjectDiagram, FaLanguage, FaEnvelope, FaPhone, FaMapMarkerAlt, FaPlusCircle, FaChevronDown, FaChevronUp, FaListAlt } from 'react-icons/fa';
@@ -554,5 +553,5 @@ function Home() {
         );
     }
 }
-    export default Home;
+ export default Home;
     

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Spinner, Alert, Pagination } from 'react-bootstrap';
 import JobCard from './JobCard';
 import JobDetailsModal from './JobDetailsModal';
-import apiService from './ApiService';
+import {apiService} from './ApiService';
 import apiEndpoints from './apiendpoint';
 
 function JobList() {

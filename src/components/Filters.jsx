@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Form, Button } from 'react-bootstrap';
-import apiService from './ApiService';  
+import {apiService} from './ApiService';  
 import apiEndpoints from './apiendpoint'; 
 
 function Filters({ onFilter }) {

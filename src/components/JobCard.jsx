@@ -12,12 +12,17 @@ function JobCard({ job, onClick }) {
                 <Card.Body>
                     <Card.Title className="text-primary">{job.postName}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">{job.companyName}</Card.Subtitle>
+                    
+                    {/* ✅ Replace <p> with <div> inside <CardText> */}
                     <Card.Text>
-                        <p><strong>Location:</strong> {job.workLocation}</p>
-                        <p><strong>Experience:</strong> {job.jobExperience} years</p>
-                        <p><strong>Qualifications:</strong> {job.jobQualifications}</p>
-                        <p className="text-truncate" style={{ maxWidth: '300px' }}><strong>Description:</strong> {job.jobDescription}</p>
+                        <div><strong>Location:</strong> {job.workLocation}</div>
+                        <div><strong>Experience:</strong> {job.jobExperience} years</div>
+                        <div><strong>Qualifications:</strong> {job.jobQualifications}</div>
+                        <div className="text-truncate" style={{ maxWidth: '300px' }}>
+                            <strong>Description:</strong> {job.jobDescription}
+                        </div>
                     </Card.Text>
+
                     <Button variant="outline-primary" onClick={() => onClick(job)}>
                         View Details
                     </Button>
