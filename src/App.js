@@ -44,23 +44,20 @@ function App() {
         <Router>
             <Header />
             <Routes>
-                {/* Redirect Home Route to Appropriate Page */}
                 <Route path="/" element={
                     userRole === 'ADMIN' ? <Navigate to="/create-post" /> :
                     userRole === 'USER' ? <Navigate to="/job-list" /> :
                     <Navigate to="/login" />
                 } />
 
-                {/* Job List Page (For USERS) */}
                 <Route path="/job-list" element={
                     userRole === 'USER' ? (
                         <Container fluid className="mt-4">
-                            <h2 className="text-center mb-4">Available Jobs</h2>
                             <Row>
-                                <Col md={3} className="sticky-filters">
+                                {/* <Col md={3} className="sticky-filters">
                                     <Filters />
-                                </Col>
-                                <Col md={9} className="scrollable-content">
+                                </Col> */}
+                                <Col md={12} className="scrollable-content">
                                     <JobList onJobClick={handleShowDetails} />
                                 </Col>
                             </Row>
@@ -69,12 +66,10 @@ function App() {
                     ) : <Navigate to="/" />
                 } />
 
-                {/* Create Post Page (For ADMINS) */}
                 <Route path="/create-post" element={
                     userRole === 'ADMIN' ? <CreatePost /> : <Navigate to="/" />
                 } />
 
-                {/* Profile Update Routes */}
                 <Route path="/update-profile/*" element={
                     userRole ? (
                         <Container fluid className="d-flex" style={{ height: '100vh' }}>
@@ -97,11 +92,8 @@ function App() {
                     ) : <Navigate to="/login" />
                 } />
 
-                {/* Login & Register Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-
-                {/* Redirect unknown routes to /job-list */}
                 <Route path="*" element={<Navigate to="/job-list" />} />
             </Routes>
             <Footer />

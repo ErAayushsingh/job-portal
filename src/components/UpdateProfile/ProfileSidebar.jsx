@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Nav } from 'react-bootstrap';
+import { List, ListItem, ListItemButton, ListItemText, Typography, Divider, Box } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 
 function ProfileSidebar() {
@@ -17,7 +17,7 @@ function ProfileSidebar() {
     }, []);
 
     const menuItems = [
-        { name: 'Home', route: 'home' },
+        { name: 'Profile', route: 'home' },
         { name: 'My Applications', route: 'applications' },
         { name: 'My Bookmarks', route: 'bookmarks' },
         { name: 'Edit Resume', route: 'edit-resume' },
@@ -27,23 +27,26 @@ function ProfileSidebar() {
     ];
 
     return (
-        <div className="profile-sidebar p-2" style={{ borderRight: '1px solid #ccc', height: '100vh' }}>
-            <h4 className="mb-4">{userName}</h4>
-            <p className="text-muted mb-4">{userEmail}</p>
-            <Nav variant="pills" className="flex-column">
+        <Box sx={{ p: 0, borderRight: '1px solid #ccc', height: '100vh' }}>
+            <Typography variant="h6" gutterBottom>
+                {userName}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+                {userEmail}
+            </Typography>
+
+            <Divider sx={{ my: 2 }} />
+
+            <List>
                 {menuItems.map((item, index) => (
-                    <Nav.Link
-                        as={NavLink}
-                        to={`/update-profile/${item.route}`}
-                        key={index}
-                        className="text-dark"
-                        style={{ cursor: 'pointer' }}
-                    >
-                        {item.name}
-                    </Nav.Link>
+                    <ListItem key={index} disablePadding>
+                        <ListItemButton component={NavLink} to={`/update-profile/${item.route}`}>
+                            <ListItemText primary={item.name} />
+                        </ListItemButton>
+                    </ListItem>
                 ))}
-            </Nav>
-        </div>
+            </List>
+        </Box>
     );
 }
 

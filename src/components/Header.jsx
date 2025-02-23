@@ -27,30 +27,30 @@ function Header({ onSearchResults }) {
 
     const handleSearch = async (e) => {
         e.preventDefault();
-        if (searchQuery.trim()) {
-            try {
-                const url = apiEndpoints.jobs.searchJobs(searchQuery);
-                const response = await apiService.get(url);
-                onSearchResults(response);
-
-                setAlert({
-                    message: `Jobs found for "${searchQuery}"!`,
-                    variant: 'success',
-                });
-                setSearchQuery('');
-            } catch (err) {
-                setAlert({
-                    message: 'Failed to fetch search results. Please try again.',
-                    variant: 'danger',
-                });
-            }
-        } else {
+        try {
+            const url = searchQuery.trim() 
+                ? apiEndpoints.jobs.searchJobs(searchQuery) 
+                : apiEndpoints.jobs.getAllJobs; // If search query is empty, fetch all jobs
+    
+            const response = await apiService.get(url);
+            onSearchResults(response);
+    
             setAlert({
-                message: 'Please enter a search keyword.',
-                variant: 'warning',
+                message: searchQuery.trim() 
+                    ? `Jobs found for "${searchQuery}"!` 
+                    : 'Showing all jobs.',
+                variant: 'success',
+            });
+    
+            setSearchQuery('');
+        } catch (err) {
+            setAlert({
+                message: 'Failed to fetch search results. Please try again.',
+                variant: 'danger',
             });
         }
     };
+    
 
     const handleLogout = () => {
         localStorage.removeItem('user');

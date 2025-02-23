@@ -34,7 +34,7 @@ function Routing() {
                     path="/job-list" 
                     element={
                         <div>
-                            <h2 className="text-center mb-4 mt-3">Available Jobs</h2>
+                            {/* <h2 className="text-center mb-4 mt-3">Available Jobs</h2> */}
                             <div className="d-flex flex-column flex-md-row">
                                 <div className="flex-grow-1 mb-3 mb-md-0">
                                     <Filters onFilter={() => {}} />

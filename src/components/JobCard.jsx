@@ -1,34 +1,58 @@
 import React from 'react';
-import { Card, Col, Button } from 'react-bootstrap';
+import { Card, CardContent, Typography, Button, Box, IconButton } from '@mui/material';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
-function JobCard({ job, onClick }) {
+function JobCard({ job, onClick, isBookmarked, onBookmarkToggle }) {
     return (
-        <Col md={6} className="mb-4">
-            <Card 
-                className="shadow-sm border-0" 
-                onClick={() => onClick(job)} 
-                style={{ cursor: 'pointer', borderRadius: '10px' }}
-            >
-                <Card.Body>
-                    <Card.Title className="text-primary">{job.postName}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">{job.companyName}</Card.Subtitle>
-                    
-                    {/* ✅ Replace <p> with <div> inside <CardText> */}
-                    <Card.Text>
-                        <div><strong>Location:</strong> {job.workLocation}</div>
-                        <div><strong>Experience:</strong> {job.jobExperience} years</div>
-                        <div><strong>Qualifications:</strong> {job.jobQualifications}</div>
-                        <div className="text-truncate" style={{ maxWidth: '300px' }}>
-                            <strong>Description:</strong> {job.jobDescription}
-                        </div>
-                    </Card.Text>
+        <Card 
+            sx={{ 
+                boxShadow: 3, 
+                borderRadius: 2, 
+                p: 2, 
+                textAlign: 'left', 
+                height: '100%', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                justifyContent: 'space-between',
+                cursor: 'pointer'
+            }}
+        >
+            <CardContent>
+                <Typography variant="h6" color="primary" gutterBottom>{job.postName}</Typography>
+                <Typography variant="subtitle2" color="textSecondary">{job.companyName}</Typography>
+                <Typography variant="body2"><strong>Location:</strong> {job.workLocation}</Typography>
+                <Typography variant="body2"><strong>Experience:</strong> {job.jobExperience} years</Typography>
+                <Typography variant="body2"><strong>Qualifications:</strong> {job.jobQualifications}</Typography>
+                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <strong>Description:</strong> {job.jobDescription || 'No description available'}
+                </Typography>
+            </CardContent>
 
-                    <Button variant="outline-primary" onClick={() => onClick(job)}>
-                        View Details
-                    </Button>
-                </Card.Body>
-            </Card>
-        </Col>
+            {/* Bookmark and View Buttons */}
+            <Box display="flex" justifyContent="center" gap={1} pb={2}>
+                <IconButton 
+                    onClick={(e) => { 
+                        e.stopPropagation(); // Prevents triggering card click
+                        onBookmarkToggle(job.id); 
+                    }}
+                    sx={{ borderRadius: 2, border: '1px solid #ccc' }}
+                >
+                    {isBookmarked ? <BookmarkIcon color="primary" /> : <BookmarkBorderIcon />}
+                </IconButton>
+
+                <Button 
+                    variant="contained" 
+                    color="primary" 
+                    onClick={(e) => { 
+                        e.stopPropagation(); // Prevents triggering card click
+                        onClick(job); 
+                    }}
+                >
+                    View
+                </Button>
+            </Box>
+        </Card>
     );
 }
 

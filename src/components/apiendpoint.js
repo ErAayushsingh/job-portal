@@ -8,7 +8,7 @@ const apiEndpoints = {
     },
     jobs: {
         getAllJobs: `${API_BASE_URL}/public/getAllJobs`,
-        searchJobs: (keyword) => `${API_BASE_URL}/public/search/?keyword=${keyword}`,
+        searchJobs: (keyword) => `${API_BASE_URL}/public/search?keyword=${keyword}`,
     },
     user: {
         details: `${PRIVATE_BASE_URL}/getUserDetails`,  // Fetch all user details
