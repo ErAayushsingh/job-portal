@@ -45,13 +45,14 @@ function AddressSection() {
 
     const handleSaveAddress = async () => {
         try {
-            await apiService.put(apiEndpoints.profile.address.update, address);
+            await apiService.put(apiEndpoints.profile.address.update(address.id), address);
             setEditing(false);
             setSnackbar({ open: true, message: 'Address updated successfully', severity: 'success' });
         } catch (err) {
             setSnackbar({ open: true, message: 'Failed to update address', severity: 'error' });
         }
     };
+    
 
     const handleConfirmDeleteAddress = () => {
         setConfirmDialog({ open: true });

@@ -11,13 +11,13 @@ const apiEndpoints = {
         searchJobs: (keyword) => `${API_BASE_URL}/public/search?keyword=${keyword}`,
     },
     user: {
-        details: `${PRIVATE_BASE_URL}/getUserDetails`,  // Fetch all user details
+        details: `${PRIVATE_BASE_URL}/getUserOtherDetails`,  // Fetch all user details
     },
     profile: {
         address: {
             add: `${PRIVATE_BASE_URL}/addAddress`,
             get: `${PRIVATE_BASE_URL}/getAddress`,  
-            update: `${PRIVATE_BASE_URL}/updateAddress`,
+            update: (id) => `${PRIVATE_BASE_URL}/updateAddress/${id}`,
         },
         certification: {
             add: `${PRIVATE_BASE_URL}/addCertification`,
